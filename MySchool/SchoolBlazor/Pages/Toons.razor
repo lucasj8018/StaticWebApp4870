@@ -1,0 +1,53 @@
+﻿@page "/toons"
+@inject HttpClient Http
+
+<PageTitle>Cartoon Characters</PageTitle>
+
+<h1>Cartoon Characters</h1>
+
+@if (toons == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Picture</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in toons)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.FirstName @item.LastName</td>
+                    <td><img src="@item.PictureUrl" alt="@item.FirstName @item.LastName" style="width: 50px;" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Toon[]? toons;
+
+    protected override async Task OnInitializedAsync()
+    {
+        toons = await Http.GetFromJsonAsync<Toon[]>("https://apipool.azurewebsites.net/api/toons");
+    }
+
+    public class Toon
+    {
+        public int Id { get; set; }
+
+        public string? FirstName { get; set; }
+
+        public string? LastName { get; set; }
+        public string? PictureUrl { get; set; }
+
+    }
+}
